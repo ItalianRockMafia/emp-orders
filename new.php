@@ -10,7 +10,7 @@ require '../global/functions/irm.php';
 if(isset($_GET['order'])){
 	$order = $_POST['orders'];
 	$bsc_member = $_POST['bsc-member'];
-	$order_array = str_getcsv($order, ',');
+	$order_array['products'] = str_getcsv($order, ',');
 	$order_array['bsc-member'] = $bsc_member;
 	$order_array['status'] = "New";
 	$order_json = addslashes(json_encode($order_array));
