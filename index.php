@@ -75,6 +75,9 @@ if ($tg_user !== false) {
 					case 'New':
 						$badge = '<span class="badge badge-success">Complete</span>';
 						break;
+					case 'Ordered':
+						$badge = '<span class="badge badge-warning">Complete</span>';
+						break;
 					default:
 						$badge = '<span class="badge badge-dark">Unknown</span>';
 					break;
