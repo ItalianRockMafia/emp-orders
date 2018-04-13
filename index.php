@@ -65,7 +65,24 @@ if ($tg_user !== false) {
 			You have no orders.
 		</div>';
 	} else{
-
+		echo '<div class="list-group">';
+			foreach($my_orders['emp-orders'] as $my_order){
+				$order = json_decode($my_order['products'],true);
+				switch ($order['status']) {
+					case 'New':
+						$badge = '<span class="badge badge-danger">New</span>';
+						break;
+					case 'New':
+						$badge = '<span class="badge badge-success">Complete</span>';
+						break;
+					default:
+						$badge = '<span class="badge badge-dark">Unknown</span>';
+					break;
+				}
+				echo '<a href="order.php?order=' . $my_order['empID'] . '" class="list-group-item list-group-item-action"> Order Nr. #' . $my_order['empID'] . ' '.
+				$badge . '</a>';
+			}
+		echo '</div>';
 	}
 } else {
 	echo '
