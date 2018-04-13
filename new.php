@@ -6,6 +6,24 @@ require '../global/functions/telegram.php';
 $config = require "../config.php";
 require '../global/functions/irm.php';
 
+
+if(isset($_GET['order'])){
+	$order = $_POST['orders'];
+	$bsc_member = $_POST['bsc-member'];
+	$order_array = str_getcsv($order, ',');
+	$order_array['bsc-member'] = $bsc_member;
+	$order_array['status'] = "New";
+	$order_json = addslashes(json_encode($order_array));
+	$irmID = $_SESSION['irmID'];
+	$postfields = "{\n \t \"userIDFK\": \"$irmID\", \n \t \"products\": \"$order_json\" \n }";
+	$orderComplete = postCall($config->api_url . "emp-orders", $postfields);
+	if(is_numeric($orderComplete)){
+		header('Location: ' . $config->app_url . "emp?order=complete");
+	} else {
+		header('Location: ' . $config->app_url . "emp?order=failed");
+	}
+}
+
 ?>
 <!doctype html>
 <html>
@@ -55,6 +73,7 @@ require '../global/functions/irm.php';
 saveSessionArray($tg_user);
 if ($tg_user !== false) {
 	$bsc_members = json_decode(getCall($config->api_url . "users?transform=1&filter=bsc,eq,1"), true);
+
 	?>
 	<h1>Enter your order</h1>
 	<form method="POST" action="?order=1">
@@ -67,7 +86,7 @@ if ($tg_user !== false) {
       <select id="bsc-member" name="bsc-member" class="form-control">
 		<?php
 			foreach($bsc_members['users'] as $bsc_member){
-				echo '<option>' . $bsc_member['tgusername'] . '</br>';
+				echo '<option value=' . $bsc_member['telegramID'] . '>' . $bsc_member['tgusername'] . '</option>';
 			}
 		?>
       </select>
