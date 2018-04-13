@@ -54,20 +54,28 @@ require '../global/functions/irm.php';
 
 saveSessionArray($tg_user);
 if ($tg_user !== false) {
+	$bsc_members = json_decode(getCall($config->api_url . "users?transform=1&filter=bsc,eq,1"), true);
 	?>
 	<h1>Enter your order</h1>
-	<form>
+	<form method="POST" action="?order=1">
   <div class="form-group">
   <label for="orders">Enter article numbers, seperated by a comma (",")</label>
-    <textarea class="form-control" id="orders" rows="2"></textarea>
+    <textarea class="form-control" id="orders" name="orders" rows="2"></textarea>
   </div>
   <div class="form-group">
-	  <label for="bsc-member">State</label>
-      <select id="bsc-member" class="form-control">
-        <option selected>Choose...</option>
-        <option>...</option>
+	  <label for="bsc-member">Select a BSC member to order the products for you</label>
+      <select id="bsc-member" name="bsc-member" class="form-control">
+		<?php
+			foreach($bsc_members['users'] as $bsc_member){
+				echo '<option>' . $bsc_member['tgusername'] . '</br>';
+			}
+		?>
       </select>
-    </div>
+	</div>
+	<button type="submit" class="btn btn-success">Order now</button>
+	<small id="submitHelp" class="form-text text-muted">Your order is binding. If the order is not yet ordered at EMP you can canel it.</small>
+
+
 </form>
 
 <?php
