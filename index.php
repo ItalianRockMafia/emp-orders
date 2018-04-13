@@ -28,8 +28,11 @@ $date = new DateTime();
 							<li class="nav-item">
         				<a class="nav-link" href="https://italianrockmafia.ch/settings.php">Settings</a>
       				</li>
-			  <li class="nav-item active">
-				<a class="nav-link" href="https://italianrockmafia.ch/meetup">Events <span class="sr-only">(current)</span></a>
+			  <li class="nav-item">
+				<a class="nav-link" href="https://italianrockmafia.ch/meetup">Events</a>
+				</li>
+				<li class="nav-item active">
+				<a class="nav-link" href="https://italianrockmafia.ch/emp">EMP <span class="sr-only">(current)</span></a>
 			  </li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
@@ -42,6 +45,40 @@ $date = new DateTime();
 <div class="topspacer"></div>
 <main role="main">
 	<div class="container">
+	<?php
+
+saveSessionArray($tg_user);
+if ($tg_user !== false) {
+
+} else {
+	echo '
+	<div class="alert alert-danger" role="alert">
+	<strong>Error.</strong> You need to <a href="https://italianrockmafia.ch/login.php">login</a> first.
+  </div>
+';
+}
+?>
+
+<!-- Modal coming soon -->
+<div class="modal fade" id="comingSoon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Coming Soon</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        This feature is still in development.
+      </div>
+      <div class="modal-footer">
+			<button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 
