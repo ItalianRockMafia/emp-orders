@@ -1,6 +1,11 @@
 <?php
 session_start();
 $date = new DateTime();
+require '../global/functions/apicalls.php';
+require '../global/functions/telegram.php';
+$config = require "../config.php";
+require '../global/functions/irm.php';
+
 ?>
 <!doctype html>
 <html>
@@ -49,7 +54,19 @@ $date = new DateTime();
 
 saveSessionArray($tg_user);
 if ($tg_user !== false) {
+	?>
+<h1>EMP-Orders</h1>
+<p class="desc">With this tool, you can order EMP-Products through a EMP-Backstage club memeber, wich means free shipping for you.</p>
+<h2>Your orders <a href="new.php"><i class="fa fa-plus-circle righticon" aria-hidden="true"></i></a></h2>
+<?php
+	$my_orders = json_decode(getCall($config->api_url ."emp-orders?transform=1&filter=userIDFK,eq," . $_SESSION['irmID']), true);
+	if(empty($my_orders['emp-orders'])){
+			echo '<div class="alert alert-warning" role="alert">
+			You have no orders.
+		</div>';
+	} else{
 
+	}
 } else {
 	echo '
 	<div class="alert alert-danger" role="alert">
