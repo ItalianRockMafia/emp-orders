@@ -55,7 +55,20 @@ require '../global/functions/irm.php';
 saveSessionArray($tg_user);
 if ($tg_user !== false) {
 	?>
-
+	<h1>Enter your order</h1>
+	<form>
+  <div class="form-group">
+  <label for="orders">Enter article numbers, seperated by a comma (",")</label>
+    <textarea class="form-control" id="orders" rows="2"></textarea>
+  </div>
+  <div class="form-group">
+	  <label for="bsc-member">State</label>
+      <select id="bsc-member" class="form-control">
+        <option selected>Choose...</option>
+        <option>...</option>
+      </select>
+    </div>
+</form>
 
 <?php
 } else {
