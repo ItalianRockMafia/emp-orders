@@ -87,10 +87,12 @@ if ($tg_user !== false) {
 		}
 		echo '</ul>';
 		echo '<h2>Comments</h2>';
-		$ordercommentsID = json_decode(getCall($config->api_url . "empComments?transform=1&filter=empIDFK,eq," . $orderID));
-		foreach($ordercommentsID as $commentIDs){
-			
+		$ordercommentsID = json_decode(getCall($config->api_url . "empComments?transform=1&filter=empIDFK,eq," . $orderID), true);
+		foreach($ordercommentsID['empComments'] as $commentIDs){
+			$commRecs[] = $commentIDs['commentIDFK'];
 		}
+		print_r($commRecs);
+		print_r(getCall($config->api_url . "comments/1,2"));
 
 	}
 	
