@@ -8,6 +8,18 @@ $config = require "../config.php";
 $tg_user = getTelegramUserData();
 saveSessionArray($tg_user);
 
+if(isset($_GET['addcomment'])){
+	$comment = $_POST['Newcomment'];
+	$irmID = $_SESSION['irmID'];
+	$commentPost = "{\n \t \"comment\": \"$comment\", \n \t \"authorIDFK\": \"$irmID\" \n }";
+	$newComID = postCall($config->api_url . "comments", $commentPost);
+	if(is_numeric($newComID)){
+		$empPost = "{\n \t \"empIDFK\": \"$orderID\", \n \t \"commentIDFK\": \"$newComID\" \n }";
+		postCall($config->api_url . "empComments", $empPost);
+	}
+	header('Location: ' . $config->app_url . 'emp/order.php?order=' . $orderID);
+}
+
 ?>
 <!doctype html>
 <html>
@@ -79,7 +91,7 @@ if ($tg_user !== false) {
 				$badge = '<span class="badge badge-dark">Unknown</span>';
 			break;
 		}
-	echo '<h1>Order #' . $orderID . ' ' .  $badge . '</h1>';
+		echo '<h1>Order #' . $orderID . ' ' .  $badge . '</h1>';
 	
 		echo '<ul>';
 		foreach($products['products'] as $product){
@@ -91,8 +103,36 @@ if ($tg_user !== false) {
 		foreach($ordercommentsID['empComments'] as $commentIDs){
 			$commRecs[] = $commentIDs['commentIDFK'];
 		}
-		print_r($commRecs);
-		print_r(getCall($config->api_url . "comments/1,2"));
+		$qrystr = "";
+		foreach($commRecs as $commID){
+			$qrystr .= $commID . ",";
+		}
+		$qrystr = rtrim($qrystr,",");
+		$comments = json_decode(getCall($config->api_url . "comments/" . $qrystr . "?transform=1&order=commentID,asc"), true);
+		foreach($comments as $comment){
+			$author = json_decode(getCall($config->api_url . "users/" . $comment['authorIDFK'] . "?transform=1"), true);
+			echo '<div class="card">
+			<div class="card-body">
+			 '. $comment['comment'] .'
+			 <footer class="blockquote-footer">'. $author['tgusername'].'</footer>			 
+			</div>
+		  </div>';
+		}
+		?> <h3>New comment</h3>
+		<form action="?addcomment=1&order=<?php echo $orderID;?>" method="POST">
+			<div class="form-group">
+    			<label for="Newcomment">Your comment</label>
+    			<textarea class="form-control" id="Newcomment" name="Newcomment" rows="3"></textarea>
+			  </div>
+			  <button type="submit" class="btn btn-success">Submit</button>
+
+		</form>
+
+		
+		<?php 
+
+
+
 
 	}
 	
