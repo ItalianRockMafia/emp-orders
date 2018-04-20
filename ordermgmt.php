@@ -1,12 +1,46 @@
 <?php
 session_start();
-$date = new DateTime();
+$orderID = $_GET['order'];
 require '../global/functions/apicalls.php';
 require '../global/functions/telegram.php';
-$config = require "../config.php";
 require '../global/functions/irm.php';
+$config = require "../config.php";
 $tg_user = getTelegramUserData();
+saveSessionArray($tg_user);
 
+if(isset($_GET['addcomment'])){
+	$comment = $_POST['Newcomment'];
+	$irmID = $_SESSION['irmID'];
+	$commentPost = "{\n \t \"comment\": \"$comment\", \n \t \"authorIDFK\": \"$irmID\" \n }";
+	$newComID = postCall($config->api_url . "comments", $commentPost);
+	if(is_numeric($newComID)){
+		$empPost = "{\n \t \"empIDFK\": \"$orderID\", \n \t \"commentIDFK\": \"$newComID\" \n }";
+		postCall($config->api_url . "empComments", $empPost);
+		$order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?transform=1"), true);
+		$customer = json_decode(getCall($config->api_url . "users/" . $order['userIDFK'] . "?transform=1"),true);
+		$alertText = urlencode("Hi. " . $tg_user['username'] . ' made a new comment on your <a href="' . $config->app_url . "emp/order.php?order=" . $orderID . '"> order #'. $orderID . '</a>:' .chr(10) . $comment);
+		$alertURL = "https://api.telegram.org/bot" . $config->telegram['token'] . "/sendMessage?chat_id=" .  $customer['telegramID'] . "&parse_mode=HTML&text=" . $alertText;		
+		getCall($alertURL);
+	}
+	header('Location: ' . $config->app_url . 'emp/ordermgmt.php?order=' . $orderID);
+}
+
+if(isset($_GET['status'])){
+	$status = $_POST['status'];
+	$order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?transform=1"), true);
+	$customer = json_decode(getCall($config->api_url . "users/" . $order['userIDFK'] . "?transform=1"),true);
+	$orderArr = json_decode($order['products'], true);
+	$orderArr['status'] = $status;
+	$newJson = addslashes(json_encode($orderArr));
+	$postfields = "{\n \t \"products\": \"$newJson\" \n }";
+	$result = putCall($config->api_url . "emp-orders/" . $orderID, $postfields);
+	$alertText = urlencode("Hi " . $customer['tgusername'] . chr(10) . '<a href="' . $config->app_url . "emp/order.php?order=" . $orderID . '">Your order #'. $orderID . '</a> has been updated.
+		New status is: ' . $status);
+		$alertURL = "https://api.telegram.org/bot" . $config->telegram['token'] . "/sendMessage?chat_id=" .  $customer['telegramID'] . "&parse_mode=HTML&text=" . $alertText;		
+		getCall($alertURL);
+	header('Location: ' . $config->app_url . 'emp/ordermgmt.php?order=' . $orderID);
+	
+}
 ?>
 <!doctype html>
 <html>
@@ -55,14 +89,10 @@ $tg_user = getTelegramUserData();
 
 saveSessionArray($tg_user);
 if ($tg_user !== false) {
-	?>
+	
 
 $order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?transform=1"), true);
-	if($order["userIDFK"] != $_SESSION['irmID']){
-		echo '<div class="alert alert-danger" role="alert">
-		<strong>Error!</strong> You do\'t have access to this order
-	  </div>';
-	} else {
+	
 		$products = json_decode($order['products'], true);
 		switch ($products['status']) {
 				case 'New':
@@ -75,7 +105,7 @@ $order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?tra
 					$badge = '<span class="badge badge-warning">Processing</span>';
 					break;
 				case 'Delivery':
-					$badge = '<span class="badge badge-Info">Delivery Pending</span>';
+					$badge = '<span class="badge badge-info">Delivery Pending</span>';
 					break;
 					case 'Ordered':
 					$badge = '<span class="badge badge-danger">Ordered</span>';
@@ -85,12 +115,30 @@ $order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?tra
 				break;
 			}
 		echo '<h1>Order #' . $orderID . ' ' .  $badge . '</h1>';
+		$customer = json_decode(getCall($config->api_url . "users/" . $order['userIDFK'] . "?transform=1"),true);
+		echo '<p class="desc">by <a href="tg://user?id=' . $customer['telegramID'] . '">' . $customer['tgusername'] . '</a></p>';
 	
 		echo '<ul>';
 		foreach($products['products'] as $product){
-			echo '<li><a href="https://emp-online.ch/search?q=' . $product .'"> Product #' . $product . '</a>';
+			echo '<li><a href="https://emp-online.ch/search?q=' . $product .'" target="_blank"> Product #' . $product . '</a>';
 		}
 		echo '</ul>';
+?> 
+		<h2>Update Status</h2> 
+		<form method="POST" action="?status=1&order=<?php echo $orderID;?>"> 
+			<div class="form-group">
+    			<label for="status">New status:</label>
+    			<select class="form-control" id="status" name="status">
+     	 			<option value="Processing">Processing</option>
+					<option value="Ordered">Ordered</option>
+      				<option value="Delivery">Delivery Pending</option>
+      				<option value="Complete">Complete</option>
+    			</select>
+			  </div>
+			  <button type="submit" class="btn btn-success">Submit</button>
+		</form>
+<?php
+
 		echo '<h2>Comments</h2>';
 		$ordercommentsID = json_decode(getCall($config->api_url . "empComments?transform=1&filter=empIDFK,eq," . $orderID), true);
 		foreach($ordercommentsID['empComments'] as $commentIDs){
@@ -121,7 +169,8 @@ $order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?tra
 		No comments.
 	  </div>';
 	}
-		?> <h3>New comment</h3>
+		?> 
+		<h3>New comment</h3>
 		<form action="?addcomment=1&order=<?php echo $orderID;?>" method="POST">
 			<div class="form-group">
     			<label for="Newcomment">Your comment</label>
@@ -133,11 +182,6 @@ $order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?tra
 
 		
 		<?php 
-
-
-
-
-	}
 	
 } else {
 	echo '

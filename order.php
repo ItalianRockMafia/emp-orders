@@ -16,6 +16,12 @@ if(isset($_GET['addcomment'])){
 	if(is_numeric($newComID)){
 		$empPost = "{\n \t \"empIDFK\": \"$orderID\", \n \t \"commentIDFK\": \"$newComID\" \n }";
 		postCall($config->api_url . "empComments", $empPost);
+		$order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?transform=1"),true);
+		$orderArr = json_decode($order['products'],true);
+		$bsc = $orderArr['bsc-member'];
+		$alertText = urlencode("Hi. " . $tg_user['username'] . ' made a new comment on your <a href="' . $config->app_url . "emp/ordermgmt.php?order=" . $orderID . '"> assignment #'. $orderID . '</a>:' . chr(10) . $comment);
+		$alertURL = "https://api.telegram.org/bot" . $config->telegram['token'] . "/sendMessage?chat_id=" .  $bsc . "&parse_mode=HTML&text=" . $alertText;		
+		getCall($alertURL);
 	}
 	header('Location: ' . $config->app_url . 'emp/order.php?order=' . $orderID);
 }
@@ -88,7 +94,7 @@ if ($tg_user !== false) {
 					$badge = '<span class="badge badge-warning">Processing</span>';
 					break;
 				case 'Delivery':
-					$badge = '<span class="badge badge-Info">Delivery Pending</span>';
+					$badge = '<span class="badge badge-info">Delivery Pending</span>';
 					break;
 					case 'Ordered':
 					$badge = '<span class="badge badge-danger">Ordered</span>';
@@ -101,7 +107,7 @@ if ($tg_user !== false) {
 	
 		echo '<ul>';
 		foreach($products['products'] as $product){
-			echo '<li><a href="https://emp-online.ch/search?q=' . $product .'"> Product #' . $product . '</a>';
+			echo '<li><a href="https://emp-online.ch/search?q=' . $product .'" target="_blank"> Product #' . $product . '</a>';
 		}
 		echo '</ul>';
 		echo '<h2>Comments</h2>';

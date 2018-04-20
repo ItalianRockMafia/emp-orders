@@ -5,6 +5,8 @@ require '../global/functions/apicalls.php';
 require '../global/functions/telegram.php';
 $config = require "../config.php";
 require '../global/functions/irm.php';
+$tg_user = getTelegramUserData();
+
 
 
 if(isset($_GET['order'])){
@@ -18,6 +20,9 @@ if(isset($_GET['order'])){
 	$postfields = "{\n \t \"userIDFK\": \"$irmID\", \n \t \"products\": \"$order_json\" \n }";
 	$orderComplete = postCall($config->api_url . "emp-orders", $postfields);
 	if(is_numeric($orderComplete)){
+		$alertText = urlencode("Hi. " . $tg_user['username'] . ' made a new order on EMP via you. <a href="' . $config->app_url . "emp/ordermgmt.php?order=" . $orderComplete . '">View it online</a>');
+		$alertURL = "https://api.telegram.org/bot" . $config->telegram['token'] . "/sendMessage?chat_id=" .  $bsc_member . "&parse_mode=HTML&text=" . $alertText;		
+		getCall($alertURL);
 		header('Location: ' . $config->app_url . "emp?order=complete");
 	} else {
 		header('Location: ' . $config->app_url . "emp?order=failed");

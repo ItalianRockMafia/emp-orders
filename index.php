@@ -80,7 +80,7 @@ if ($tg_user !== false) {
 						$badge = '<span class="badge badge-warning">Processing</span>';
 						break;
 					case 'Delivery':
-						$badge = '<span class="badge badge-Info">Delivery Pending</span>';
+						$badge = '<span class="badge badge-info">Delivery Pending</span>';
 						break;
 						case 'Ordered':
 						$badge = '<span class="badge badge-danger">Ordered</span>';
@@ -113,7 +113,7 @@ if ($tg_user !== false) {
 							$badge = '<span class="badge badge-warning">Processing</span>';
 							break;
 						case 'Delivery':
-							$badge = '<span class="badge badge-Info">Delivery Pending</span>';
+							$badge = '<span class="badge badge-info">Delivery Pending</span>';
 							break;
 							case 'Ordered':
 							$badge = '<span class="badge badge-danger">Ordered</span>';
