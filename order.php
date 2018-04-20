@@ -78,19 +78,25 @@ if ($tg_user !== false) {
 	} else {
 		$products = json_decode($order['products'], true);
 		switch ($products['status']) {
-			case 'New':
-				$badge = '<span class="badge badge-danger">New</span>';
+				case 'New':
+					$badge = '<span class="badge badge-primary">New</span>';
+					break;
+				case 'Complete':
+					$badge = '<span class="badge badge-success">Complete</span>';
+					break;
+				case 'Processing':
+					$badge = '<span class="badge badge-warning">Processing</span>';
+					break;
+				case 'Delivery':
+					$badge = '<span class="badge badge-Info">Delivery Pending</span>';
+					break;
+					case 'Ordered':
+					$badge = '<span class="badge badge-danger">Ordered</span>';
+					break;
+				default:
+					$badge = '<span class="badge badge-dark">Unknown</span>';
 				break;
-			case 'New':
-				$badge = '<span class="badge badge-success">Complete</span>';
-				break;
-			case 'Ordered':
-				$badge = '<span class="badge badge-warning">Complete</span>';
-				break;
-			default:
-				$badge = '<span class="badge badge-dark">Unknown</span>';
-			break;
-		}
+			}
 		echo '<h1>Order #' . $orderID . ' ' .  $badge . '</h1>';
 	
 		echo '<ul>';
