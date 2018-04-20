@@ -122,7 +122,7 @@ if ($tg_user !== false) {
 							$badge = '<span class="badge badge-dark">Unknown</span>';
 						break;
 					}
-					echo '<a href="order.php?order=' . $order['empID'] . '" class="list-group-item list-group-item-action"> Order Nr. #' . $order['empID'] . ' '.
+					echo '<a href="ordermgmt.php?order=' . $order['empID'] . '" class="list-group-item list-group-item-action"> Order Nr. #' . $order['empID'] . ' '.
 					$badge . '</a>';	
 			}	
 			
