@@ -5,6 +5,7 @@ require '../global/functions/apicalls.php';
 require '../global/functions/telegram.php';
 $config = require "../config.php";
 require '../global/functions/irm.php';
+$tg_user = getTelegramUserData();
 
 ?>
 <!doctype html>
@@ -15,7 +16,7 @@ require '../global/functions/irm.php';
 			<link rel="stylesheet" href="../global/main.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 		<script src="https://use.fontawesome.com/c414fc2c21.js"></script>
-		<title>IRM - Meetup planer</title>
+		<title>IRM - EMP orders</title>
 	</head>
 	<body>
 
@@ -91,6 +92,42 @@ if ($tg_user !== false) {
 				echo '<a href="order.php?order=' . $my_order['empID'] . '" class="list-group-item list-group-item-action"> Order Nr. #' . $my_order['empID'] . ' '.
 				$badge . '</a>';
 			}
+		echo '</div>';
+	}
+	$irmUser = json_decode(getCall($config->api_url . "users/" . $_SESSION['irmID'] . "?transfor=1"),true);
+	if($irmUser['bsc'] == "1"){
+		echo '<h1>Orders for you</h1>';
+		$allOrders = json_decode(getCall($config->api_url . "emp-orders?transform=1"),true);
+		foreach($allOrders['emp-orders'] as $order){
+			$products = json_decode($order['products'], true);
+			if($products['bsc-member'] == $tg_user['id']){
+			echo '<div class="list-group">';
+					switch ($products['status']) {
+						case 'New':
+							$badge = '<span class="badge badge-primary">New</span>';
+							break;
+						case 'Complete':
+							$badge = '<span class="badge badge-success">Complete</span>';
+							break;
+						case 'Processing':
+							$badge = '<span class="badge badge-warning">Processing</span>';
+							break;
+						case 'Delivery':
+							$badge = '<span class="badge badge-Info">Delivery Pending</span>';
+							break;
+							case 'Ordered':
+							$badge = '<span class="badge badge-danger">Ordered</span>';
+							break;
+						default:
+							$badge = '<span class="badge badge-dark">Unknown</span>';
+						break;
+					}
+					echo '<a href="order.php?order=' . $order['empID'] . '" class="list-group-item list-group-item-action"> Order Nr. #' . $order['empID'] . ' '.
+					$badge . '</a>';	
+			}	
+			
+			
+		}
 		echo '</div>';
 	}
 } else {
