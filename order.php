@@ -30,7 +30,7 @@ if(isset($_GET['addcomment'])){
 			<link rel="stylesheet" href="travel.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 		<script src="https://use.fontawesome.com/c414fc2c21.js"></script>
-		<title>IRM - Meetup planer</title>
+		<title>IRM - My order</title>
 	</head>
 	<body>
 
@@ -103,12 +103,17 @@ if ($tg_user !== false) {
 		foreach($ordercommentsID['empComments'] as $commentIDs){
 			$commRecs[] = $commentIDs['commentIDFK'];
 		}
+		if(!empty($commRecs)){
+
+		
 		$qrystr = "";
 		foreach($commRecs as $commID){
 			$qrystr .= $commID . ",";
 		}
 		$qrystr = rtrim($qrystr,",");
 		$comments = json_decode(getCall($config->api_url . "comments/" . $qrystr . "?transform=1&order=commentID,asc"), true);
+		if (!isset($comments[0])) $comments=[$comments];
+ 
 		foreach($comments as $comment){
 			$author = json_decode(getCall($config->api_url . "users/" . $comment['authorIDFK'] . "?transform=1"), true);
 			echo '<div class="card">
@@ -118,6 +123,11 @@ if ($tg_user !== false) {
 			</div>
 		  </div>';
 		}
+	}else {
+		echo '<div class="alert alert-warning" role="alert">
+		No comments.
+	  </div>';
+	}
 		?> <h3>New comment</h3>
 		<form action="?addcomment=1&order=<?php echo $orderID;?>" method="POST">
 			<div class="form-group">
