@@ -84,7 +84,9 @@ if ($tg_user !== false) {
 	<form method="POST" action="?order=1">
   <div class="form-group">
   <label for="orders">Enter article numbers, seperated by a comma (",")</label>
-    <textarea class="form-control" id="orders" name="orders" rows="2"></textarea>
+	<textarea class="form-control" id="orders" name="orders" rows="2"></textarea>
+	<small id="Order help" class="form-text text-muted">
+For example: 1234,567,89,0923,5</small>
   </div>
   <div class="form-group">
 	  <label for="bsc-member">Select a BSC member to order the products for you</label>
