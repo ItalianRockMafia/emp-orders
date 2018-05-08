@@ -23,9 +23,9 @@ if(isset($_GET['order'])){
 		$alertText = urlencode("Hi. " . $tg_user['username'] . ' made a new order on EMP via you. <a href="' . $config->app_url . "emp/ordermgmt.php?order=" . $orderComplete . '">View it online</a>');
 		$alertURL = "https://api.telegram.org/bot" . $config->telegram['token'] . "/sendMessage?chat_id=" .  $bsc_member . "&parse_mode=HTML&text=" . $alertText;		
 		getCall($alertURL);
-		header('Location: ' . $config->app_url . "emp?order=complete");
+		header('Location: https://italianrockmafia.ch/emp?order=complete');
 	} else {
-		header('Location: ' . $config->app_url . "emp?order=failed");
+		header('Location: https://italianrockmafia.ch/emp?order=failed');
 	}
 }
 

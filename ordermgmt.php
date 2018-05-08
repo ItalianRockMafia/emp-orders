@@ -22,7 +22,7 @@ if(isset($_GET['addcomment'])){
 		$alertURL = "https://api.telegram.org/bot" . $config->telegram['token'] . "/sendMessage?chat_id=" .  $customer['telegramID'] . "&parse_mode=HTML&text=" . $alertText;		
 		getCall($alertURL);
 	}
-	header('Location: ' . $config->app_url . 'emp/ordermgmt.php?order=' . $orderID);
+	header('Location: https://italianrockmafia.ch/emp/ordermgmt.php?order=' . $orderID);
 }
 
 if(isset($_GET['status'])){
@@ -38,7 +38,7 @@ if(isset($_GET['status'])){
 		New status is: ' . $status);
 		$alertURL = "https://api.telegram.org/bot" . $config->telegram['token'] . "/sendMessage?chat_id=" .  $customer['telegramID'] . "&parse_mode=HTML&text=" . $alertText;		
 		getCall($alertURL);
-	header('Location: ' . $config->app_url . 'emp/ordermgmt.php?order=' . $orderID);
+	header('Location: https://italianrockmafia.ch/emp/ordermgmt.php?order=' . $orderID);
 	
 }
 ?>
