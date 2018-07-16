@@ -75,7 +75,7 @@ if(isset($_GET['status'])){
 				<a class="nav-link" href="https://italianrockmafia.ch/emp">EMP <span class="sr-only">(current)</span></a>
 			  </li>
 			  <li class="nav-item">
-				<a class="nav-link" href="https://italianrockmafia.ch/vinyl">Vynil</a>
+			  <a class="nav-link" href="../vinyl">Vinyl</a>
 				</li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
