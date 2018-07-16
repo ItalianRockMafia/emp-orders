@@ -1,10 +1,10 @@
 <?php
 session_start();
 $date = new DateTime();
-require '../global/functions/apicalls.php';
-require '../global/functions/telegram.php';
-$config = require "../config.php";
-require '../global/functions/irm.php';
+require_once '../global/functions/apicalls.php';
+require_once '../global/functions/telegram.php';
+$config = require_once "../config.php";
+require_once '../global/functions/irm.php';
 $tg_user = getTelegramUserData();
 
 require_once '../global/functions/header.php';

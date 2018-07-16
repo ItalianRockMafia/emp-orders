@@ -1,10 +1,10 @@
 <?php
 session_start();
 $orderID = $_GET['order'];
-require '../global/functions/apicalls.php';
-require '../global/functions/telegram.php';
-require '../global/functions/irm.php';
-$config = require "../config.php";
+require_once '../global/functions/apicalls.php';
+require_once '../global/functions/telegram.php';
+require_once '../global/functions/irm.php';
+$config = require_once "../config.php";
 $tg_user = getTelegramUserData();
 saveSessionArray($tg_user);
 
