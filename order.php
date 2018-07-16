@@ -23,7 +23,7 @@ if(isset($_GET['addcomment'])){
 		$alertURL = "https://api.telegram.org/bot" . $config->telegram['token'] . "/sendMessage?chat_id=" .  $bsc . "&parse_mode=HTML&text=" . $alertText;		
 		getCall($alertURL);
 	}
-	header('Location: ' . $config->app_url . 'emp/order.php?order=' . $orderID);
+	header('Location: https://italianrockmafia.ch/emp/order.php?order=' . $orderID);
 }
 
 ?>
