@@ -25,7 +25,9 @@ echo $header;
 	<?php
 
 saveSessionArray($tg_user);
+$access = $_SESSION['access'];
 if ($tg_user !== false) {
+	if($access >= "2"){
 	?>
 <h1>EMP-Orders</h1>
 <p class="desc">With this tool, you can order EMP-Products through a EMP-Backstage club memeber, wich means free shipping for you.</p>
@@ -101,6 +103,12 @@ if ($tg_user !== false) {
 		}
 		echo '</div>';
 	}
+
+} else {
+	echo '<div class="alert alert-warning" role="alert">
+	<strong>Warning.</strong> You need don\'t have access to this event.
+	</div>';
+}
 } else {
 	echo '
 	<div class="alert alert-danger" role="alert">

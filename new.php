@@ -47,7 +47,11 @@ if(isset($_GET['order'])){
 	<?php
 
 saveSessionArray($tg_user);
+$access = $_SESSION['access'];
+
 if ($tg_user !== false) {
+	if($access >= "2"){
+
 	$bsc_members = json_decode(getCall($config->api_url . "users?transform=1&filter=bsc,eq,1"), true);
 
 	?>
@@ -76,6 +80,12 @@ For example: 1234,567,89,0923,5</small>
 </form>
 
 <?php
+
+} else {
+	echo '<div class="alert alert-warning" role="alert">
+	<strong>Warning.</strong> You need don\'t have access to this event.
+	</div>';
+}
 } else {
 	echo '
 	<div class="alert alert-danger" role="alert">

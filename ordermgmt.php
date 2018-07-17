@@ -7,9 +7,10 @@ require_once '../global/functions/irm.php';
 $config = require_once "../config.php";
 $tg_user = getTelegramUserData();
 saveSessionArray($tg_user);
+$access = $_SESSION['access'];
 
-require_once_once '../global/functions/header.php';
-require_once_once '../global/functions/footer.php';
+require_once '../global/functions/header.php';
+require_once '../global/functions/footer.php';
 
 $menu = renderMenu();
 $options['nav'] = $menu;
@@ -60,7 +61,8 @@ if(isset($_GET['status'])){
 
 saveSessionArray($tg_user);
 if ($tg_user !== false) {
-	
+	if($access >= "2"){
+
 
 $order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?transform=1"), true);
 	
@@ -153,7 +155,11 @@ $order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?tra
 
 		
 		<?php 
-	
+	} else {
+		echo '<div class="alert alert-warning" role="alert">
+		<strong>Warning.</strong> You need don\'t have access to this event.
+		</div>';
+	}
 } else {
 	echo '
 	<div class="alert alert-danger" role="alert">

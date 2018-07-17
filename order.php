@@ -47,7 +47,11 @@ if(isset($_GET['addcomment'])){
 <?php
 
 saveSessionArray($tg_user);
+$access = $_SESSION['access'];
+
 if ($tg_user !== false) {
+	if($access >= "2"){
+
 	$order = json_decode(getCall($config->api_url . "emp-orders/" . $orderID . "?transform=1"), true);
 	if($order["userIDFK"] != $_SESSION['irmID']){
 		echo '<div class="alert alert-danger" role="alert">
@@ -129,7 +133,11 @@ if ($tg_user !== false) {
 
 
 	}
-	
+} else {
+	echo '<div class="alert alert-warning" role="alert">
+	<strong>Warning.</strong> You need don\'t have access to this event.
+	</div>';
+}
 } else {
 	echo '
 	<div class="alert alert-danger" role="alert">
